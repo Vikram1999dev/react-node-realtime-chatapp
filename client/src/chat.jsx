@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-
 // ScrollToBottom is a component from the react-scroll-to-bottom library in
 // React, which can be used to create a chat interface or any other UI element
 // that needs to automatically scroll to the bottom when new content is added.
@@ -34,12 +33,18 @@ const Chats = ({ socket, username, room }) => {
   };
 
   useEffect(() => {
-    //here we are listening to backend
-    socket.on('receive_message', (data) => {
+    const handleReceiveMessage = (data) => {
       //data we get here is from server or another person in
       //in the chat room
       setMessageList((list) => [...list, data]);
-    });
+    };
+
+    socket.on('receive_message', handleReceiveMessage);
+
+    return () => {
+      console.log('cleanup');
+      socket.off('receive_message', handleReceiveMessage);
+    };
   }, [socket]);
 
   return (
