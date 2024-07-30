@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 //The socket.io-client library is a lightweight client-side
 // implementation of Socket.IO that enables the browser to
 // establish a WebSocket connection to a Socket.IO server.
-import io from 'socket.io-client';
-import Chats from './chat';
-const socket = io.connect('http://localhost:3001');
+import { io } from "socket.io-client";
+import Chats from "./chat";
+const socket = io("http://localhost:3001");
 
 function App() {
-  const [username, setUsername] = useState('');
-  const [room, setRoom] = useState('');
+  const [username, setUsername] = useState("");
+  const [room, setRoom] = useState("");
   const [showChat, setShowChat] = useState(false);
 
-  const joinRoom = (e) => {
+  const joinRoom = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if ((username !== '') & (room !== '')) {
+    if (username !== "" && room !== "") {
       //-->01
-      socket.emit('join_room', room);
+      socket.emit("join_room", room);
       setShowChat(true);
     }
   };
