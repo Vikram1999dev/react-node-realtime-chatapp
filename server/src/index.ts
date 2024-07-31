@@ -32,6 +32,9 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3001, () => {
+server.listen(3002, () => {
   console.log("Listening on port 3001");
 });
+
+// start project with nodemon with this command
+// npm run start:dev
