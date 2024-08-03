@@ -95,7 +95,7 @@ const Chats = ({ socket, username, room }: ChatProps) => {
         <input
           type='text'
           value={currentMessage}
-          placeholder='Hey...'
+          placeholder='Message'
           onChange={(e) => setCurrentMessage(e.target.value)}
           onKeyDown={(e) => {
             //this for to send the message after entering
