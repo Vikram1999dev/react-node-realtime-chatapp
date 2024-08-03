@@ -138,7 +138,6 @@ body {
 }
 
 #other .message-content {
-  justify-content: flex-end;
   background-color: cornflowerblue;
 }
 

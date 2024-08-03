@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { DefaultEventsMap } from "@socket.io/component-emitter";
 
@@ -18,6 +18,9 @@ interface MessageType {
 const Chats = ({ socket, username, room }: ChatProps) => {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState<MessageType[]>([]);
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
+  const [sendByMe, setSendByMe] = useState(false);
+  const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -40,11 +43,22 @@ const Chats = ({ socket, username, room }: ChatProps) => {
       //this will clear the chatbox input
       //after sending the message
       setCurrentMessage("");
+      setSendByMe((prev) => !prev);
     }
   };
 
   useEffect(() => {
     const handleReceiveMessage = (data: MessageType) => {
+      const isAtBottom =
+        messageContainerRef.current &&
+        messageContainerRef.current.scrollHeight -
+          messageContainerRef.current.scrollTop <=
+          messageContainerRef.current.clientHeight + 75;
+
+      if (isAtBottom) {
+        setSendByMe((prev) => !prev);
+      }
+
       //data we get here is from another person in
       //in the chat room
       setMessageList((list) => [...list, data]);
@@ -57,13 +71,17 @@ const Chats = ({ socket, username, room }: ChatProps) => {
     };
   }, [socket]);
 
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [sendByMe]);
+
   return (
     <div className='chat-window'>
       <div className='chat-header'>
         <p>{username}</p>
       </div>
       <div className='chat-body'>
-        <div className='message-container'>
+        <div className='message-container' ref={messageContainerRef}>
           {messageList.map((messageContent, index) => {
             return (
               <div
@@ -89,6 +107,7 @@ const Chats = ({ socket, username, room }: ChatProps) => {
               </div>
             );
           })}
+          <div ref={messageEndRef} />
         </div>
       </div>
       <div className='chat-footer'>
